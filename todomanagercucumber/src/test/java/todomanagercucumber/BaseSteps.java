@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -32,7 +33,7 @@ public class BaseSteps {
     protected static JSONArray tasklist = null;
 
     protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course = null;
-    protected static HashMap<Integer, Boolean> expected_incompleted_todos_of_course = null;
+    protected static HashMap<Integer, List<Integer>> expected_incompleted_todos_of_course = null;
 
     public static void stopServer() {
         System.out.println("Terminating server...");
@@ -110,6 +111,7 @@ public class BaseSteps {
     }
 
     protected static JSONObject findTodoByName(String todoName) {
+        // HttpResponse<JsonNode> response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
         JSONObject response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
         for (Object proj : response.getJSONArray("todos")) {
             JSONObject todo = (JSONObject) proj;
@@ -117,7 +119,7 @@ public class BaseSteps {
                 return todo;
             }
         }
-        return null;
+        return response;
     }
 
     protected static JSONObject findTodoByID(int todo_id) {
@@ -134,26 +136,4 @@ public class BaseSteps {
         jsonObject.put(key, value);
         return jsonObject;
     }
-
-    protected static HashMap<Integer, Boolean> findIncompletedTasksWithProject(String title) {
-        HashMap<Integer, Boolean> incompleted = new HashMap<>();
-        JSONObject project = findProjectByName(title);
-        JSONArray todos = project.getJSONArray("tasks");
-        System.out.println("todos : " + todos.toString());
-        for(Object todo: todos) {
-            JSONObject obj = (JSONObject) todo;
-            int todo_id = obj.getInt("id");
-//            System.out.println("obj : " + obj.toString());
-//            System.out.println("obj.id: " + findTodoByID(obj.getInt("id")).toString());
-//            System.out.println("obj.id.todos: " + findTodoByID(obj.getInt("id")).getJSONArray("todos"));
-//            System.out.println("obj.id.todos[0]: " + findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0));
-//            System.out.println(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0));
-            boolean status = Boolean.parseBoolean(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0).getString("doneStatus"));
-            if(!status) {
-                incompleted.put(todo_id, status);
-            }
-        }
-        return incompleted;
-    }
-
 }

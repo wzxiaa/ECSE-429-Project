@@ -12,11 +12,11 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.jar.JarException;
 
 import static org.junit.Assert.*;
 
@@ -28,10 +28,9 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
         body.put("title", title);
     }
 
-    @When("^the user requests the incomplete tasks for the course with title (.+)$")
-    public void the_user_requests_the_incomplete_tasks_for_the_course_with_title(String title) throws Throwable {
+    @When("^the user requests the incomplete tasks for the course with (.+)$")
+    public void the_user_requests_the_incomplete_tasks_for_the_course_with(String title) throws Throwable {
         actual_incompleted_todos_of_course = findIncompletedTasksWithProject(title);
-        System.out.println("actual_incompleted_todos_of_course.size: "+ actual_incompleted_todos_of_course.size());
     }
 
     @Then("the returned tasks all marked as incomplete")
@@ -39,19 +38,24 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
         throw new io.cucumber.java.PendingException();
     }
 
-    @Then("^(.+) todos will be returned$")
-    public void todos_will_be_returned(String ntodos) throws Throwable {
-        assertEquals(expected_incompleted_todos_of_course.size(), actual_incompleted_todos_of_course.size());
-    }
+//    @Then("^(.+) todos will be returned$")
+//    public void todos_will_be_returned(String ntodos) throws Throwable {
+//        assertEquals(expected_incompleted_todos_of_course.size(), actual_incompleted_todos_of_course.size());
+//    }
 
     @Then("^no todos will be returned$")
     public void no_todos_will_be_returned() throws Throwable {
-        throw new PendingException();
+        if(actual_incompleted_todos_of_course == null) {
+            actual_incompleted_todos_of_course = new HashMap<>();
+        }
+        assertEquals(true, actual_incompleted_todos_of_course.isEmpty());
     }
 
-    @Then("^the user will receive an error telling them that the course doesn't exist on the system$")
-    public void the_user_will_receive_an_error_telling_them_that_the_course_doesnt_exist_on_the_system() throws Throwable {
-        throw new PendingException();
+    @Then("^(.+) todos will be returned for (.+)$")
+    public void todos_will_be_returned_for(String ntodos, String title) throws Throwable {
+        JSONObject project = findProjectByName(title);
+        int p_id = project.getInt("id");
+        assertEquals(expected_incompleted_todos_of_course.get(p_id).size(), actual_incompleted_todos_of_course.size());
     }
 
     @And("^the following courses exist in the system$")
@@ -81,6 +85,7 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
         JSONObject project = findProjectByName(classname);
         if (project != null) {
             int project_id = project.getInt("id");
+            List<Integer> todos_ids = new ArrayList<>();
             ArrayList<List<String>> data = new ArrayList<>(table.asLists(String.class));
             List<String> headers = data.get(0);
             data.remove(0);
@@ -105,39 +110,51 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
 
                 boolean status = todo_body.getBoolean("doneStatus");
                 if (!status) {
-                    expected_incompleted_todos_of_course.put(todo_id, status);
+                    todos_ids.add(todo_id);
                 }
             }
+            expected_incompleted_todos_of_course.put(project_id, todos_ids);
             System.out.println("expected_incompleted_todos_of_course.size: "+ expected_incompleted_todos_of_course.size());
         } else {
             fail();
         }
     }
 
-    @And("^each todo returned will be marked as done$")
-    public void each_todo_returned_will_be_marked_as_done() throws Throwable {
-        throw new PendingException();
-    }
-
-    @And("^each todo returned will be a task of the class with title (.+)$")
-    public void each_todo_returned_will_be_a_task_of_the_class_with_title(String title) throws Throwable {
-        throw new PendingException();
-    }
-
-    @And("^the class (.+) has no outstanding tasks$")
-    public void the_class_has_no_outstanding_tasks(String title) throws Throwable {
-        throw new PendingException();
-    }
-
-    @And("^the class with (.+) has no tasks$")
-    public void the_class_with_has_no_tasks(String title) throws Throwable {
-        throw new PendingException();
-    }
 
     @And("^the returned tasks of (.+) all marked as incomplete$")
     public void the_returned_tasks_of_all_marked_as_incomplete(String title) throws Throwable {
-        System.out.println("expected_incompleted_todos_of_course.size(): " + expected_incompleted_todos_of_course.size());
-        System.out.println("actual_incompleted_todos_of_course.size(): " + actual_incompleted_todos_of_course.size());
-        assertEquals(expected_incompleted_todos_of_course, actual_incompleted_todos_of_course);
+        Iterator<Integer> itr = actual_incompleted_todos_of_course.keySet().iterator();
+        while(itr.hasNext()){
+            int todo_id = itr.next();
+            JSONObject todo = findTodoByID(todo_id);
+            assertEquals(false, Boolean.parseBoolean(todo.getJSONArray("todos").getJSONObject(0).getString("doneStatus")));
+        }
+    }
+
+    // Helper functions
+
+    protected static HashMap<Integer, Boolean> findIncompletedTasksWithProject(String title) {
+        HashMap<Integer, Boolean> incompleted = new HashMap<>();
+        JSONObject project = findProjectByName(title);
+//        System.out.println(project.toString());
+        if(project==null) {
+            return null;
+        }
+        try {
+            JSONArray todos = project.getJSONArray("tasks");
+            System.out.println("todos : " + todos.toString());
+            for(Object todo: todos) {
+                JSONObject obj = (JSONObject) todo;
+                int todo_id = obj.getInt("id");
+                boolean status = Boolean.parseBoolean(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0).getString("doneStatus"));
+                if(!status) {
+                    incompleted.put(todo_id, status);
+                }
+            }
+            return incompleted;
+        }catch (JSONException e) {
+            System.out.println(project.toString());
+            return null;
+        }
     }
 }
