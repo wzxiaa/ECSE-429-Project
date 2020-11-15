@@ -1,13 +1,20 @@
 package todomanagercucumber;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.an.E;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
-import kong.unirest.UnirestInstance;
+import io.cucumber.java.en.Given;
+import kong.unirest.*;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class BaseSteps {
 
@@ -20,9 +27,22 @@ public class BaseSteps {
     protected static final int STATUS_BAD_REQUEST = 400;
     protected static final int STATUS_NOT_FOUND = 404;
 
+    protected static JSONObject body = null;
+    protected static HttpResponse<JsonNode> response = null;
+    protected static JSONArray tasklist = null;
+
+    protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course = null;
+    protected static HashMap<Integer, Boolean> expected_incompleted_todos_of_course = null;
+
     public static void stopServer() {
         System.out.println("Terminating server...");
         serverProcess.destroy();
+        body = null;
+        response = null;
+        tasklist = null;
+        actual_incompleted_todos_of_course = null;
+        expected_incompleted_todos_of_course = null;
+
         try {
             Thread.sleep(100);
         } catch (Exception e) {
@@ -33,6 +53,11 @@ public class BaseSteps {
     protected static void startServer() {
         try {
             System.out.println("Starting server...");
+
+            body = new JSONObject();
+            actual_incompleted_todos_of_course = new HashMap<>();
+            expected_incompleted_todos_of_course = new HashMap<>();
+
             ProcessBuilder pb = new ProcessBuilder();
             pb.command("java", "-jar" ,pathToJar);
             if (serverProcess != null) {
@@ -71,6 +96,64 @@ public class BaseSteps {
             e.printStackTrace();
             return false;
         }
+    }
+
+    protected static JSONObject findProjectByName(String projectName) {
+        JSONObject response = Unirest.get(BASE_URL + "/projects").asJson().getBody().getObject();
+        for (Object proj : response.getJSONArray("projects")) {
+            JSONObject project = (JSONObject) proj;
+            if (project.getString("title").equals(projectName)) {
+                return project;
+            }
+        }
+        return null;
+    }
+
+    protected static JSONObject findTodoByName(String todoName) {
+        JSONObject response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
+        for (Object proj : response.getJSONArray("todos")) {
+            JSONObject todo = (JSONObject) proj;
+            if (todo.getString("title").equals(todoName)) {
+                return todo;
+            }
+        }
+        return null;
+    }
+
+    protected static JSONObject findTodoByID(int todo_id) {
+        HttpResponse<JsonNode> response = Unirest.get(BASE_URL + "/todos" + "/" + todo_id).asJson();
+        if(response.isSuccess()) {
+            JSONObject todo = response.getBody().getObject();
+            return todo;
+        }
+        return null;
+    }
+
+    protected static JSONObject createJSONObjectSingleRow(String key, String value) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(key, value);
+        return jsonObject;
+    }
+
+    protected static HashMap<Integer, Boolean> findIncompletedTasksWithProject(String title) {
+        HashMap<Integer, Boolean> incompleted = new HashMap<>();
+        JSONObject project = findProjectByName(title);
+        JSONArray todos = project.getJSONArray("tasks");
+        System.out.println("todos : " + todos.toString());
+        for(Object todo: todos) {
+            JSONObject obj = (JSONObject) todo;
+            int todo_id = obj.getInt("id");
+//            System.out.println("obj : " + obj.toString());
+//            System.out.println("obj.id: " + findTodoByID(obj.getInt("id")).toString());
+//            System.out.println("obj.id.todos: " + findTodoByID(obj.getInt("id")).getJSONArray("todos"));
+//            System.out.println("obj.id.todos[0]: " + findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0));
+//            System.out.println(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0));
+            boolean status = Boolean.parseBoolean(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0).getString("doneStatus"));
+            if(!status) {
+                incompleted.put(todo_id, status);
+            }
+        }
+        return incompleted;
     }
 
 }

@@ -10,11 +10,14 @@ import kong.unirest.*;
 import kong.unirest.json.JSONObject;
 import static org.junit.Assert.*;
 
-@CucumberOptions(features = "classpath:todomanagercucumber/ID005_create_new_course.feature")
+//@CucumberOptions(features = "classpath:todomanagercucumber/ID005_create_new_course.feature")
 public class CreateCourseStepDefinition extends BaseSteps {
 
-    private static JSONObject body = new JSONObject();
-    private static HttpResponse<JsonNode> response = null;
+
+    @Given("^the API server is running$")
+    public void the_api_server_is_running() throws Throwable {
+        assertEquals(true, isAlive());
+    }
 
     @Before
     public static void setupForAllTests() {
@@ -26,11 +29,6 @@ public class CreateCourseStepDefinition extends BaseSteps {
     @After
     public static void tearDownAllTests() {
         stopServer();
-    }
-
-    @Given("^the API server is running$")
-    public void the_api_server_is_running() throws Throwable {
-        assertEquals(true, isAlive());
     }
 
     @Given("^(.+) is the title of the new course$")
@@ -53,45 +51,45 @@ public class CreateCourseStepDefinition extends BaseSteps {
 
     @Then("^the new course with (.+) will be created$")
     public void the_new_course_with_will_be_created(String title) throws Throwable {
-        assertEquals(response.getStatus(), STATUS_CREATED);
+        assertEquals(STATUS_CREATED, response.getStatus());
     }
 
     @Then("^no new course will be created$")
     public void no_new_course_will_be_created() throws Throwable {
-        assertEquals(response.getStatus(), STATUS_BAD_REQUEST);
+        assertEquals(STATUS_BAD_REQUEST, response.getStatus());
     }
 
     @And("^the newly created course will be returned to the user$")
     public void the_newly_created_course_will_be_returned_to_the_user() throws Throwable {
         JSONObject responseObj = response.getBody().getObject();
+
         String actual_title = responseObj.get("title").toString();
         String expected_title = body.get("title").toString();
-        assertEquals(actual_title, expected_title);
+
+        assertEquals(expected_title, expected_title);
     }
 
     @And("^(.+) is the active status of the new course$")
     public void is_the_active_status_of_the_new_course(String isactive) throws Throwable {
         boolean active = Boolean.parseBoolean(isactive);
         body.put("active", active);
-        System.out.println("body: "  + body.toString());
-//        JSONObject responseObj = response.getBody().getObject();
-//        String actual_status = responseObj.get("active").toString();
-//        String expected_status = body.get("active").toString();
-//        assertEquals(actual_status, expected_status);
+//        System.out.println("body: "  + body.toString());
     }
 
     @And("^(.+) is the description of the new course$")
     public void is_the_description_of_the_new_course(String description) throws Throwable {
         body.put("description", description);
-        System.out.println("body: "  + body.toString());
-//        JSONObject responseObj = response.getBody().getObject();
-//        String actual_des = responseObj.get("description").toString();
-//        String expected_des = body.get("description").toString();
-//        assertEquals(actual_des, expected_des);
+//        System.out.println("body: "  + body.toString());
     }
 
     @And("^the user will receive an error message that creating with id is not allowed$")
     public void the_user_will_receive_an_error_message_that_creating_with_id_is_not_allowed() throws Throwable {
+        String expectedErroMsg = "Invalid Creation: Failed Validation: Not allowed to create with id";
+        String actualErrorMsg = response.getBody().getObject().get("errorMessages").toString();
+        System.out.println(actualErrorMsg);
+        //System.out.println(response.getBody().getArray().getJSONObject(0).get("errorMessage"));
         assertEquals(response.getStatus(), STATUS_BAD_REQUEST);
+//        System.out.println(response.getBody().toPrettyString());
+        assertEquals(true, actualErrorMsg.contains(expectedErroMsg));
     }
 }
