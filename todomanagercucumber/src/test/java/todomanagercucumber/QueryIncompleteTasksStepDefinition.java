@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-//@CucumberOptions(features = "classpath:todomanagercucumber/ID006_query_incomplete_tasks.feature")
+//@CucumberOptions(features = "classpath:todomanagercucumber/ID007_query_incomplete_tasks.feature")
 public class QueryIncompleteTasksStepDefinition extends BaseSteps {
 
     @Given("^(.+) is the title of the class$")
