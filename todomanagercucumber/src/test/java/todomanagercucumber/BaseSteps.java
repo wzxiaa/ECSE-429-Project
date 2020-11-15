@@ -34,6 +34,7 @@ public class BaseSteps {
 
     protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course = null;
     protected static HashMap<Integer, List<Integer>> expected_incompleted_todos_of_course = null;
+    protected static int p_id;
 
     public static void stopServer() {
         System.out.println("Terminating server...");
@@ -43,6 +44,7 @@ public class BaseSteps {
         tasklist = null;
         actual_incompleted_todos_of_course = null;
         expected_incompleted_todos_of_course = null;
+        p_id = -1;
 
         try {
             Thread.sleep(100);
@@ -58,7 +60,6 @@ public class BaseSteps {
             body = new JSONObject();
             actual_incompleted_todos_of_course = new HashMap<>();
             expected_incompleted_todos_of_course = new HashMap<>();
-
             ProcessBuilder pb = new ProcessBuilder();
             pb.command("java", "-jar" ,pathToJar);
             if (serverProcess != null) {
@@ -119,7 +120,7 @@ public class BaseSteps {
                 return todo;
             }
         }
-        return response;
+        return null;
     }
 
     protected static JSONObject findTodoByID(int todo_id) {
@@ -135,5 +136,10 @@ public class BaseSteps {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, value);
         return jsonObject;
+    }
+
+    protected static JSONArray findAllTodos() {
+        JSONArray response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getArray();
+        return response;
     }
 }

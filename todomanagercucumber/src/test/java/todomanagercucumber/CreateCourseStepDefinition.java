@@ -14,22 +14,22 @@ import static org.junit.Assert.*;
 public class CreateCourseStepDefinition extends BaseSteps {
 
 
-    @Given("^the API server is running$")
-    public void the_api_server_is_running() throws Throwable {
-        assertEquals(true, isAlive());
-    }
-
-    @Before
-    public static void setupForAllTests() {
-        serverProcess = null;
-        unirest.config().reset();
-        startServer();
-    }
-
-    @After
-    public static void tearDownAllTests() {
-        stopServer();
-    }
+//    @Given("^the API server is running$")
+//    public void the_api_server_is_running() throws Throwable {
+//        assertEquals(true, isAlive());
+//    }
+//
+//    @Before
+//    public static void setupForAllTests() {
+//        serverProcess = null;
+//        unirest.config().reset();
+//        startServer();
+//    }
+//
+//    @After
+//    public static void tearDownAllTests() {
+//        stopServer();
+//    }
 
     @Given("^(.+) is the title of the new course$")
     public void is_the_title_of_the_new_course(String title) throws Throwable {
