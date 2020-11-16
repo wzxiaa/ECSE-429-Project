@@ -1,5 +1,5 @@
-@Cucumber
-Feature: As a student, I want to create a to do list for a new class I am taking, so I can manage course work.
+Feature: Create course to do list (ID_005)
+    As a student, I want to create a to do list for a new class I am taking, so I can manage course work.
 
 Background:
 	Given the API server is running
