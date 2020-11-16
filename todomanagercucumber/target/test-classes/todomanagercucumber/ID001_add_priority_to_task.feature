@@ -1,4 +1,5 @@
-Feature: As a student, I categorize tasks as HIGH, MEDIUM or LOW priority, so I can better manage my time.
+Feature: Add priority to task (ID_001)
+As a student, I categorize tasks as HIGH, MEDIUM or LOW priority, so I can better manage my time.
 
   Background:
     Given the API server is running

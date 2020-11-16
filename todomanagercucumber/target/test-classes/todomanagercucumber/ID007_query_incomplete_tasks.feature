@@ -1,6 +1,5 @@
-@Cucumber
-Feature:
-As a student, I query the incomplete tasks for a class I am taking, to help manage my time.
+Feature: Query complete tasks for a course (ID_007)
+    As a student, I query the incomplete tasks for a class I am taking, to help manage my time.
 
   Background:
     Given the API server is running

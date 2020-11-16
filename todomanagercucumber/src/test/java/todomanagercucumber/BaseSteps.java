@@ -41,6 +41,7 @@ public class BaseSteps {
     protected static JSONArray tasklist;
     protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course;
     protected static HashMap<Integer, List<Integer>> expected_incompleted_todos_of_course;
+    protected static JSONObject todoItem;
     protected static int p_id;
 
     public static void stopServer() {
@@ -66,6 +67,8 @@ public class BaseSteps {
         actual_incompleted_todos_of_course = new HashMap<>();
         expected_incompleted_todos_of_course = new HashMap<>();
         p_id = -1;
+        todoItem = null;
+
     }
 
     protected static void startServer() {
@@ -134,7 +137,6 @@ public class BaseSteps {
 
 
     protected static JSONObject findTodoByName(String todoName) {
-        // HttpResponse<JsonNode> response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
         JSONObject response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
         for (Object proj : response.getJSONArray("todos")) {
             JSONObject todo = (JSONObject) proj;
@@ -208,10 +210,18 @@ public class BaseSteps {
         }
         return response;
     }
-    
-    public static int findIdFromTodoName(String todoName) {
-        JSONObject todo = findTodoByName(todoName);
-        if (todo == null) return -1;
-        return todo.getInt("id");
+
+    public static void markTaskAsDone(String title) {
+        JSONObject todo = findTodoByName(title);
+        int todo_id;
+        JSONObject body = new JSONObject();
+        body.put("doneStatus", true);
+        if(todo == null) {
+            httpresponse = Unirest.post("/todos/" + "null").body(body).asJson();
+        } else {
+            todo_id = todo.getInt("id");
+            body.put("doneStatus", true);
+            httpresponse = Unirest.post("/todos/" + todo_id).body(body).asJson();
+        }
     }
 }
