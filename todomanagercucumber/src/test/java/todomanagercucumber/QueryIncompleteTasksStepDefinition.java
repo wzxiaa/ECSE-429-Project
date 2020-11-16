@@ -19,76 +19,71 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-//@CucumberOptions(features = "classpath:todomanagercucumber/ID007_query_incomplete_tasks.feature")
 public class QueryIncompleteTasksStepDefinition extends BaseSteps {
 
-    @When("^the user requests the incomplete HIGH priority tasks for the course with title (.+)$")
-    public void the_user_queries_all_incomplete_tasks_with_high_priority_from_a_course_with_title(String title) {
-        taskList = new JSONArray();
-        JSONArray tasks = getProjectTasks(title);
-        if (tasks == null) {
-            //Problem: /projects/-1/tasks is a known bug, using /projects/-1 instead to show error
-            response = Unirest.get("/projects/-1")
-                    .asJson().getBody().getObject();
-            return;
+
+    @Given("^(.+) is the title of the class$")
+    public void is_the_title_of_the_class(String title) throws Throwable {
+        body.put("title", title);
+    }
+
+    @When("^the user requests the incomplete tasks for the course with (.+)$")
+    public void the_user_requests_the_incomplete_tasks_for_the_course_with(String title) throws Throwable {
+        actual_incompleted_todos_of_course = findIncompletedTasksWithProject(title);
+    }
+
+    @Then("the returned tasks all marked as incomplete")
+    public void the_returned_tasks_all_marked_as_incomplete() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("^no todos will be returned$")
+    public void no_todos_will_be_returned() throws Throwable {
+        if (actual_incompleted_todos_of_course == null) {
+            actual_incompleted_todos_of_course = new HashMap<>();
         }
-        for (Object o : tasks) {
-            int id = ((JSONObject)o).getInt("id");
-            JSONObject todo = (JSONObject) Unirest.get("/todos/" + id)
-                    .asJson().getBody().getObject()
-                    .getJSONArray("todos").get(0);
-            int priorityID = ((JSONObject) ((JSONArray) todo.get("categories")).get(0)).getInt("id");
-            String category = (String) ((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0)).get("title");
-            if (todo.getString("doneStatus").equalsIgnoreCase("false") && category.equalsIgnoreCase("HIGH")) {
-                taskList.put(todo);
+        assertEquals(true, actual_incompleted_todos_of_course.isEmpty());
+    }
+
+    @Then("^(.+) todos will be returned for (.+)$")
+    public void todos_will_be_returned_for(String ntodos, String title) throws Throwable {
+        JSONObject project = findProjectByName(title);
+        int p_id = project.getInt("id");
+        assertEquals(expected_incompleted_todos_of_course.get(p_id).size(), actual_incompleted_todos_of_course.size());
+    }
+
+    @And("^the returned tasks of (.+) all marked as incomplete$")
+    public void the_returned_tasks_of_all_marked_as_incomplete(String title) throws Throwable {
+        Iterator<Integer> itr = actual_incompleted_todos_of_course.keySet().iterator();
+        while (itr.hasNext()) {
+            int todo_id = itr.next();
+            JSONObject todo = findTodoByID(todo_id);
+            assertEquals(false, Boolean.parseBoolean(todo.getJSONArray("todos").getJSONObject(0).getString("doneStatus")));
+        }
+    }
+
+    protected static HashMap<Integer, Boolean> findIncompletedTasksWithProject(String title) {
+        HashMap<Integer, Boolean> incompleted = new HashMap<>();
+        JSONObject project = findProjectByName(title);
+//        System.out.println(project.toString());
+        if (project == null) {
+            return null;
+        }
+        try {
+            JSONArray todos = project.getJSONArray("tasks");
+            System.out.println("todos : " + todos.toString());
+            for (Object todo : todos) {
+                JSONObject obj = (JSONObject) todo;
+                int todo_id = obj.getInt("id");
+                boolean status = Boolean.parseBoolean(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0).getString("doneStatus"));
+                if (!status) {
+                    incompleted.put(todo_id, status);
+                }
             }
+            return incompleted;
+        } catch (JSONException e) {
+            System.out.println(project.toString());
+            return null;
         }
     }
-
-    @Given("^(.+) is the title of a class in the system$")
-    public void is_the_title_of_a_class_in_the_system(String title) {
-    }
-
-    @Given("^(.+) is not a title of a class in the system$")
-    public void is_not_a_title_of_a_class_in_the_system(String title) {
-    }
-
-    @And("^the class with title (.+) has incomplete tasks$")
-    public void the_class_with_title_has_incomplete_tasks(String title) {
-    }
-
-    @And("^the class with title (.+) has no incomplete tasks$")
-    public void the_class_with_title_has_no_incomplete_tasks(String title) {
-    }
-
-    @And("no todos are associated with {string}")
-    public void noTodosAreAssociatedWith(String className) {
-        assertEquals(getProjectTasks(className).length(), 0);
-    }
-
-    @And("^the class with title (.+) has no tasks$")
-    public void the_class_with_title_has_no_tasks(String title) {
-    }
-
-    @Then("^(.*) todos will be returned$")
-    public void nTodosWillBeReturned(int n) {
-        assertEquals(n, taskList.length());
-    }
-
-    @And("^the user will receive an error telling them that the course doesn't exist in the system$")
-    public void the_user_will_receive_an_error_telling_them_that_the_course_doesnt_exist_in_the_system() {
-    }
-
-    @And("^each todo returned will have a HIGH priority$")
-    public void each_todo_returned_will_have_a_high_priority() {
-    }
-
-    @And("^each todo returned will be marked as done$")
-    public void eachTodoReturnedWillBeMarkedAsDone() {
-        for (Object o : taskList) {
-            JSONObject todo = (JSONObject) o;
-            assertDoneStatusEquals(todo, false);
-        }
-    }
-    
 }
