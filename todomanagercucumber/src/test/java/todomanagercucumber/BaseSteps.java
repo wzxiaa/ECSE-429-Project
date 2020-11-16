@@ -111,6 +111,13 @@ public class BaseSteps {
         return null;
     }
 
+    public static int findIdFromTodoName(String todo_name) {
+        JSONObject todo = findTodoByName(todo_name);
+        if (todo == null) return -1;
+        return todo.getInt("id");
+    }
+
+
     protected static JSONObject findTodoByName(String todoName) {
         // HttpResponse<JsonNode> response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
         JSONObject response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getObject();
@@ -141,5 +148,36 @@ public class BaseSteps {
     protected static JSONArray findAllTodos() {
         JSONArray response = Unirest.get(BASE_URL + "/todos").asJson().getBody().getArray();
         return response;
+    }
+
+    public static int findIdFromTodoCategoryName(String category_name, String todo_name) {
+        JSONObject response = Unirest.get("/todos").asJson().getBody().getObject();
+        int id = -1;
+
+        for (Object todo : response.getJSONArray("todos")) {
+            JSONObject t = (JSONObject) todo;
+            if (t.getString("title").equals(todo_name)) {
+                int todo_id = t.getInt("id");
+                JSONArray response_cat = Unirest.get("/todos/" + todo_id + "/categories").asJson()
+                        .getBody().getObject().getJSONArray("categories");
+                for (Object cat : response_cat) {
+                    JSONObject c = (JSONObject) cat;
+                    if (c.getString("title").equals(category_name)) {
+                        id = c.getInt("id");
+                        break;
+                    }
+                }
+            }
+        }
+
+        return id;
+    }
+
+    public static JSONArray getProjectTasks(String projectName) {
+        JSONObject proj = findProjectByName(projectName);
+        if (proj == null) return null;
+        int id = proj.getInt("id");
+        return Unirest.get("/projects/" + id + "/tasks")
+                .asJson().getBody().getObject().getJSONArray("todos");
     }
 }
