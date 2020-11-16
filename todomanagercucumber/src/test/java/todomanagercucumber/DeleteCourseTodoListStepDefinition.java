@@ -21,7 +21,7 @@ public class DeleteCourseTodoListStepDefinition extends BaseSteps {
     public void the_user_deletes_the_course_to_do_list_for_the_course_with(String title) throws Throwable {
         JSONObject project = findProjectByName(title);
         int p_id = project.getInt("id");
-        response = unirest.delete(BASE_URL + "/projects" + "/" + p_id).asJson();
+        httpresponse = unirest.delete(BASE_URL + "/projects" + "/" + p_id).asJson();
     }
 
     @When("^the user deletes the non-exist course to do list for the course with (.+)$")
@@ -31,19 +31,19 @@ public class DeleteCourseTodoListStepDefinition extends BaseSteps {
         try {
             int p_id = project.getInt("id");
         } catch (Exception e) {
-            response = unirest.delete(BASE_URL + "/projects" + "/" + p_id).asJson();
+            httpresponse = unirest.delete(BASE_URL + "/projects" + "/" + p_id).asJson();
         }
     }
 
     @Then("^the course to do list is deleted and returns (.+)$")
     public void the_course_to_do_list_is_deleted_and_returns(String status) throws Throwable {
-        int actual_status = response.getStatus();
+        int actual_status = httpresponse.getStatus();
         assertEquals(Integer.parseInt(status), actual_status);
     }
 
     @Then("^the course to do list cannot be deleted and returns (.+)$")
     public void the_course_to_do_list_cannot_be_deleted_and_returns(String status) throws Throwable {
-        int actual_status = response.getStatus();
+        int actual_status = httpresponse.getStatus();
         assertEquals(Integer.parseInt(status), actual_status);
     }
 

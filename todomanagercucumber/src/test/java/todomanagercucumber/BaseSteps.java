@@ -28,29 +28,44 @@ public class BaseSteps {
     protected static final int STATUS_BAD_REQUEST = 400;
     protected static final int STATUS_NOT_FOUND = 404;
 
-    protected static JSONObject body = null;
-    protected static HttpResponse<JsonNode> response = null;
-    protected static JSONArray tasklist = null;
-
-    protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course = null;
-    protected static HashMap<Integer, List<Integer>> expected_incompleted_todos_of_course = null;
+    // variables used for each tests
+    protected static String errorMessage;
+    protected static int statusCode;
+    protected static JSONObject originalValue;
+    protected static JSONObject originalTodoList;
+    protected static JSONArray taskList;
+    protected static int counter;
+    protected static JSONObject body;
+    protected static JSONObject response;
+    protected static HttpResponse<JsonNode> httpresponse;
+    protected static JSONArray tasklist;
+    protected static HashMap<Integer, Boolean> actual_incompleted_todos_of_course;
+    protected static HashMap<Integer, List<Integer>> expected_incompleted_todos_of_course;
     protected static int p_id;
 
     public static void stopServer() {
         System.out.println("Terminating server...");
         serverProcess.destroy();
-        body = null;
-        response = null;
-        tasklist = null;
-        actual_incompleted_todos_of_course = null;
-        expected_incompleted_todos_of_course = null;
-        p_id = -1;
 
         try {
             Thread.sleep(100);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void initilizeVariables() {
+        counter = 0;
+        statusCode = 0;
+        errorMessage = "";
+        response = null;
+        originalValue = null;
+        originalTodoList = null;
+        taskList = null;
+        httpresponse = null;
+        actual_incompleted_todos_of_course = new HashMap<>();
+        expected_incompleted_todos_of_course = new HashMap<>();
+        p_id = -1;
     }
 
     protected static void startServer() {
