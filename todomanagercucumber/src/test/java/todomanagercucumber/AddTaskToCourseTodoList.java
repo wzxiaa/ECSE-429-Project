@@ -16,31 +16,31 @@ import static org.junit.Assert.assertEquals;
 
 public class AddTaskToCourseTodoList extends BaseSteps{
 
-    String errorMessage;
-    int statusCode;
-    JSONObject originalValue;
-    JSONObject response;
-    JSONObject originalTodoList;
-    JSONArray taskList;
-    int counter;
-
-    @Before
-    public void initVars() {
-        Unirest.config().defaultBaseUrl(BASE_URL);
-        startServer();
-        counter = 0;
-        statusCode = 0;
-        errorMessage = "";
-        response = null;
-        originalValue = null;
-        originalTodoList = null;
-        taskList = null;
-    }
-
-    @After
-    public void after() {
-        stopServer();
-    }
+//    String errorMessage;
+//    int statusCode;
+//    JSONObject originalValue;
+//    JSONObject response;
+//    JSONObject originalTodoList;
+//    JSONArray taskList;
+//    int counter;
+//
+//    @Before
+//    public void initVars() {
+//        Unirest.config().defaultBaseUrl(BASE_URL);
+//        startServer();
+//        counter = 0;
+//        statusCode = 0;
+//        errorMessage = "";
+//        response = null;
+//        originalValue = null;
+//        originalTodoList = null;
+//        taskList = null;
+//    }
+//
+//    @After
+//    public void after() {
+//        stopServer();
+//    }
 
     @Given("the todo with name {string} and description {string} is registered in the system")
     public void the_todo_with_name_something_and_description_something_is_registered_in_the_system(String todotitle, String tododescription){
