@@ -54,6 +54,26 @@ public class SetUpStepDefinition extends BaseSteps {
         }
     }
 
+    @And("^the following todos exist in the system$")
+    public void the_following_todos_exist_in_the_system(DataTable table) throws Throwable {
+        ArrayList<List<String>> data = new ArrayList<>(table.asLists(String.class));
+        List<String> headers = data.get(0);
+        data.remove(0);
+        for(List<String> sublist: data) {
+            JSONObject tmp_body = new JSONObject();
+            for(int i=0; i<sublist.size(); i++) {
+                if (i==1) {
+                    tmp_body.put(headers.get(i), Boolean.parseBoolean(sublist.get(i)));
+                } else {
+                    tmp_body.put(headers.get(i), sublist.get(i));
+                }
+            }
+
+            HttpResponse<JsonNode> create_project = unirest.post(BASE_URL + "/todos").body(tmp_body.toString()).asJson();
+            assertEquals(STATUS_CREATED, create_project.getStatus());
+        }
+    }
+
     @Given("the following tasks are associated with {string}")
     public void the_following_tasks_are_associated_with(String string, io.cucumber.datatable.DataTable dataTable) {
         System.out.println(string);

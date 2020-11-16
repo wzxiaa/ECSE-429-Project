@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 
 public class BaseSteps {
 
-    protected static String pathToJar = "/Users/wenzongxia/Documents/GitHub/ECSE429/ECSE-429-Project/todomanagercucumber/src/test/java/todomanagercucumber/runTodoManagerRestAPI-1.5.5.jar";
+    protected static String pathToJar = "runTodoManagerRestAPI-1.5.5.jar";
     protected static final String BASE_URL = "http://localhost:4567";
     protected static Process serverProcess = null;
     protected static UnirestInstance unirest = Unirest.primaryInstance();
