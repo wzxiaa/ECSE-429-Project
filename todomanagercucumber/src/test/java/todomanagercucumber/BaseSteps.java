@@ -195,4 +195,23 @@ public class BaseSteps {
         return Unirest.get("/projects/" + id + "/tasks")
                 .asJson().getBody().getObject().getJSONArray("todos");
     }
+    
+    public static HttpResponse<JsonNode> requestPriorityForTodo(String title, String priority) {
+        int id = findIdFromTodoName(title.replace("\"", ""));
+
+        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id +"/categories")
+                .body("{\n\"title\":\"" + priority.replace("\"", "") + "\"\n}\n").asJson();
+        
+        statusCode = response.getStatus();
+        if(statusCode != 200 && statusCode != 201) {
+            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
+        }
+        return response;
+    }
+    
+    public static int findIdFromTodoName(String todoName) {
+        JSONObject todo = findTodoByName(todoName);
+        if (todo == null) return -1;
+        return todo.getInt("id");
+    }
 }
