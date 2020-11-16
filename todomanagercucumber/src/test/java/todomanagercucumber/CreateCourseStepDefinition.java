@@ -18,7 +18,7 @@ public class CreateCourseStepDefinition extends BaseSteps {
 //    public void the_api_server_is_running() throws Throwable {
 //        assertEquals(true, isAlive());
 //    }
-//
+
 //    @Before
 //    public static void setupForAllTests() {
 //        serverProcess = null;
@@ -45,23 +45,23 @@ public class CreateCourseStepDefinition extends BaseSteps {
 
     @When("^the user post the request$")
     public void the_user_post_the_request() throws Throwable {
-        response = unirest.post(BASE_URL + "/projects").body(body.toString()).asJson();
-        System.out.println("response:" + response.getBody());
+        httpresponse = unirest.post(BASE_URL + "/projects").body(body.toString()).asJson();
+        System.out.println("response:" + httpresponse.getBody());
     }
 
     @Then("^the new course with (.+) will be created$")
     public void the_new_course_with_will_be_created(String title) throws Throwable {
-        assertEquals(STATUS_CREATED, response.getStatus());
+        assertEquals(STATUS_CREATED, httpresponse.getStatus());
     }
 
     @Then("^no new course will be created$")
     public void no_new_course_will_be_created() throws Throwable {
-        assertEquals(STATUS_BAD_REQUEST, response.getStatus());
+        assertEquals(STATUS_BAD_REQUEST, httpresponse.getStatus());
     }
 
     @And("^the newly created course will be returned to the user$")
     public void the_newly_created_course_will_be_returned_to_the_user() throws Throwable {
-        JSONObject responseObj = response.getBody().getObject();
+        JSONObject responseObj = httpresponse.getBody().getObject();
 
         String actual_title = responseObj.get("title").toString();
         String expected_title = body.get("title").toString();
@@ -85,10 +85,10 @@ public class CreateCourseStepDefinition extends BaseSteps {
     @And("^the user will receive an error message that creating with id is not allowed$")
     public void the_user_will_receive_an_error_message_that_creating_with_id_is_not_allowed() throws Throwable {
         String expectedErroMsg = "Invalid Creation: Failed Validation: Not allowed to create with id";
-        String actualErrorMsg = response.getBody().getObject().get("errorMessages").toString();
+        String actualErrorMsg = httpresponse.getBody().getObject().get("errorMessages").toString();
         System.out.println(actualErrorMsg);
         //System.out.println(response.getBody().getArray().getJSONObject(0).get("errorMessage"));
-        assertEquals(response.getStatus(), STATUS_BAD_REQUEST);
+        assertEquals(httpresponse.getStatus(), STATUS_BAD_REQUEST);
 //        System.out.println(response.getBody().toPrettyString());
         assertEquals(true, actualErrorMsg.contains(expectedErroMsg));
     }

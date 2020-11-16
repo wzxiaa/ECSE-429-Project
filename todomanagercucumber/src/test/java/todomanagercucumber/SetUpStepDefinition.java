@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class SetUpStepDefinition extends BaseSteps {
+
     @Given("^the API server is running$")
     public void the_api_server_is_running() throws Throwable {
         assertEquals(true, isAlive());
@@ -26,12 +27,14 @@ public class SetUpStepDefinition extends BaseSteps {
         serverProcess = null;
         unirest.config().reset();
         startServer();
+        initilizeVariables();
     }
 
     @After
     public static void tearDownAllTests() {
         stopServer();
     }
+
 
     @And("^the following courses exist in the system$")
     public void the_following_courses_exist_in_the_system(DataTable table) throws Throwable {
@@ -111,49 +114,7 @@ public class SetUpStepDefinition extends BaseSteps {
             expected_incompleted_todos_of_course.put(project_id, todos_ids);
             System.out.println("expected_incompleted_todos_of_course.size: "+ expected_incompleted_todos_of_course.size());
         } else {
-            fail();
+
         }
     }
-
-//    @And("^the following tasks are associated with \\\"([^\\\"]*)\\\"$")
-//    public void the_following_tasks_are_associated_with_project(String classname, DataTable table) throws Throwable {
-//        System.out.println(classname);
-//        JSONObject project = findProjectByName(classname);
-//        if (project != null) {
-//            int project_id = project.getInt("id");
-//            List<Integer> todos_ids = new ArrayList<>();
-//            ArrayList<List<String>> data = new ArrayList<>(table.asLists(String.class));
-//            List<String> headers = data.get(0);
-//            data.remove(0);
-//            for(List<String> sublist: data) {
-//                JSONObject todo_body = new JSONObject();
-//                for(int i=0; i<sublist.size(); i++) {
-//                    if(i==1) {
-//                        System.out.println(Boolean.parseBoolean(sublist.get(i)));
-//                        todo_body.put(headers.get(i), Boolean.parseBoolean(sublist.get(i)));
-//                    } else {
-//                        todo_body.put(headers.get(i), sublist.get(i));
-//                    }
-//                }
-//
-//                HttpResponse<JsonNode> create_todo = unirest.post(BASE_URL + "/todos").body(todo_body.toString()).asJson();
-//                assertEquals(STATUS_CREATED, create_todo.getStatus());
-//                int todo_id = create_todo.getBody().getObject().getInt("id");
-//
-//                JSONObject req_body = createJSONObjectSingleRow("id", Integer.toString(project_id));
-//                HttpResponse<JsonNode> temp_res = unirest.post(BASE_URL + "/todos" + "/" + todo_id + "/tasksof").body(req_body.toString()).asJson();
-//                assertEquals(STATUS_CREATED, temp_res.getStatus());
-//
-//                boolean status = todo_body.getBoolean("doneStatus");
-//                if (!status) {
-//                    todos_ids.add(todo_id);
-//                }
-//            }
-//            expected_incompleted_todos_of_course.put(project_id, todos_ids);
-//            System.out.println("expected_incompleted_todos_of_course.size: "+ expected_incompleted_todos_of_course.size());
-//        } else {
-//            fail();
-//        }
-//    }
-
 }
