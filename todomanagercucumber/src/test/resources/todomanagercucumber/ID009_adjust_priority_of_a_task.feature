@@ -31,9 +31,9 @@ Feature: Adjust task priority
 
   Scenario Outline: Adjust task priority from "<priority>" priority to "<updatedPriority>" priority (Normal Flow)
     Given the todo with name "<title>", status "<doneStatus>" and description "<description>" is registered in the system
-    And the todo with title "<title>" is assigned as a "<priority>"
+    And the todo "<title>" is assigned as a "<priority>"
     When user requests to adjust the priority category of the todo with title "<title>" from "<priority>" to "<updatedPriority>"
-    Then the todo with title "<title>" should be classified as a "<updatedPriority>" priority task
+    Then the todo "<title>" should be classified as a "<updatedPriority>" priority task
     Examples: 
       | title                 | doneStatus | description              | priority  | updatedPriority | 
       | Assignment1 Interview | true       | Interview some engineers | MEDIUM    | LOW             | 
@@ -45,9 +45,9 @@ Feature: Adjust task priority
 
   Scenario Outline: Adjust task priority to the same priority (Alternate Flow)
     Given the todo with name "<title>", status "<doneStatus>" and description "<description>" is registered in the system
-    And the todo with title "<title>" is assigned as a "<priority>"
+    And the todo "<title>" is assigned as a "<priority>"
     When user requests to adjust the priority category of the todo with title "<title>" from "<priority>" to "<priority>"
-    Then the todo with title "<title>" should be classified as a "<priority>" priority task
+    Then the todo "<title>" should be classified as a "<priority>" priority task
     Examples: 
       | title                 | doneStatus | description              | priority  | 
       | Assignment1 Interview | true       | Interview some engineers | MEDIUM    |  
@@ -56,8 +56,8 @@ Feature: Adjust task priority
 
   Scenario Outline: Adjust task priority to multiple priorities (Error Flow)
     Given the todo with name "<title>", status "<doneStatus>" and description "<description>" is registered in the system
-    And the todo with title "<title>" is assigned as a "<priority>"
-    When user requests to add a priority category of "<newPriority>" to the todo with title "<title>" with existing "<priority>"
+    And the todo "<title>" is assigned as a "<priority>"
+    When user requests to add a priority category of "<newPriority>" to the todo with title "<title>"
     Then an error code "<errorCode>" should be returned
     Examples: 
       | title                 | doneStatus | description              | priority  | newPriority | errorCode | 
@@ -67,8 +67,8 @@ Feature: Adjust task priority
   
   Scenario Outline: Adjust task priority to a non-existing category (Error Flow)
     Given the todo with name "<title>", status "<doneStatus>" and description "<description>" is registered in the system
-    And the todo with title "<title>" is assigned as a "<priority>"
-    When user requests to update the priority category of the todo with title "<title>" from "<priority>" to "<invalidPriority>"
+    And the todo "<title>" is assigned as a "<priority>"
+    When user requests to adjust the priority category of the todo with title "<title>" from "<priority>" to "<invalidPriority>"
     Then an error code "<errorCode>" should be returned
     Examples: 
       | title                 | doneStatus | description              | priority  | invalidPriority | errorCode | 

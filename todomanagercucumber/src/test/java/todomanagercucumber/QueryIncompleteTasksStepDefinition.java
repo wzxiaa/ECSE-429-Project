@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 
 public class QueryIncompleteTasksStepDefinition extends BaseSteps {
 
+
     @Given("^(.+) is the title of the class$")
     public void is_the_title_of_the_class(String title) throws Throwable {
         body.put("title", title);
@@ -38,7 +39,7 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
 
     @Then("^no todos will be returned$")
     public void no_todos_will_be_returned() throws Throwable {
-        if(actual_incompleted_todos_of_course == null) {
+        if (actual_incompleted_todos_of_course == null) {
             actual_incompleted_todos_of_course = new HashMap<>();
         }
         assertEquals(true, actual_incompleted_todos_of_course.isEmpty());
@@ -54,7 +55,7 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
     @And("^the returned tasks of (.+) all marked as incomplete$")
     public void the_returned_tasks_of_all_marked_as_incomplete(String title) throws Throwable {
         Iterator<Integer> itr = actual_incompleted_todos_of_course.keySet().iterator();
-        while(itr.hasNext()){
+        while (itr.hasNext()) {
             int todo_id = itr.next();
             JSONObject todo = findTodoByID(todo_id);
             assertEquals(false, Boolean.parseBoolean(todo.getJSONArray("todos").getJSONObject(0).getString("doneStatus")));
@@ -65,22 +66,22 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
         HashMap<Integer, Boolean> incompleted = new HashMap<>();
         JSONObject project = findProjectByName(title);
 //        System.out.println(project.toString());
-        if(project==null) {
+        if (project == null) {
             return null;
         }
         try {
             JSONArray todos = project.getJSONArray("tasks");
             System.out.println("todos : " + todos.toString());
-            for(Object todo: todos) {
+            for (Object todo : todos) {
                 JSONObject obj = (JSONObject) todo;
                 int todo_id = obj.getInt("id");
                 boolean status = Boolean.parseBoolean(findTodoByID(obj.getInt("id")).getJSONArray("todos").getJSONObject(0).getString("doneStatus"));
-                if(!status) {
+                if (!status) {
                     incompleted.put(todo_id, status);
                 }
             }
             return incompleted;
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             System.out.println(project.toString());
             return null;
         }
