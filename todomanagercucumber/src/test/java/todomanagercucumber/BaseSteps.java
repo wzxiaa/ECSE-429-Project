@@ -134,11 +134,6 @@ public class BaseSteps {
         if (todo == null) return -1;
         return todo.getInt("id");
     }
-    
-    public static void assertDoneStatusEquals(JSONObject todo, boolean val) {
-        assertNotNull(todo);
-        assertTrue(todo.getString("doneStatus").equalsIgnoreCase(val + ""));
-    }
 
 
     protected static JSONObject findTodoByName(String todoName) {
