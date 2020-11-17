@@ -33,16 +33,18 @@ public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
             return;
         }
         for (Object o : tasks) {
-            System.out.println(o.toString());
+//            System.out.println(o.toString());
             int id = ((JSONObject)o).getInt("id");
             JSONObject todo = (JSONObject) Unirest.get("/todos/" + id)
                     .asJson().getBody().getObject()
                     .getJSONArray("todos").get(0);
             int priorityID = ((JSONObject) ((JSONArray) todo.get("categories")).get(0)).getInt("id");
-            System.out.println(priorityID);
-            System.out.println((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0));
+//            System.out.println(getProjectTasks(title));
+            //System.out.println(priorityID);
+            //System.out.println((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0));
+            System.out.println(Unirest.get("/categories/").asJson().getBody());
             String category = (String) ((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0)).get("title");
-            System.out.println(category);
+            //System.out.println(category);
             if (todo.getString("doneStatus").equalsIgnoreCase("false") && category.equalsIgnoreCase("HIGH")) {
                 taskList.put(todo);
             }
@@ -102,10 +104,16 @@ public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
         boolean firstLine = true;
         for (List<String> columns : rows) {
             if(!firstLine) {
+                List<String> tmp = new ArrayList<>();
+                for(int i=0; i<columns.size(); i++) {
+                    System.out.println(columns.get(i));
+                }
                 int id = addTodoByRow(columns).getInt("id");
                 Unirest.post("/todos/" + id + "/tasksof")
                         .body("{\"id\":\"" + projId + "\"}")
                         .asJson();
+
+//                categorizeTaskWithTitleAsPriority(tmp.get(0), columns.get(2));
             }
             firstLine = false;
         }
