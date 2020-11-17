@@ -1,26 +1,19 @@
 package todomanagercucumber;
 
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
-import io.cucumber.java.sl.In;
-import io.cucumber.junit.CucumberOptions;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-//@CucumberOptions(features = "classpath:todomanagercucumber/ID007_query_incomplete_tasks.feature")
-public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
+public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseStepDefinition {
 
     @When("^the user requests the incomplete HIGH priority tasks for the course with title (.+)$")
     public void the_user_queries_all_incomplete_tasks_with_high_priority_from_a_course_with_title(String title) {
@@ -33,18 +26,13 @@ public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
             return;
         }
         for (Object o : tasks) {
-//            System.out.println(o.toString());
             int id = ((JSONObject)o).getInt("id");
             JSONObject todo = (JSONObject) Unirest.get("/todos/" + id)
                     .asJson().getBody().getObject()
                     .getJSONArray("todos").get(0);
             int priorityID = ((JSONObject) ((JSONArray) todo.get("categories")).get(0)).getInt("id");
-//            System.out.println(getProjectTasks(title));
-            //System.out.println(priorityID);
-            //System.out.println((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0));
             System.out.println(Unirest.get("/categories/").asJson().getBody());
             String category = (String) ((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0)).get("title");
-            //System.out.println(category);
             if (todo.getString("doneStatus").equalsIgnoreCase("false") && category.equalsIgnoreCase("HIGH")) {
                 taskList.put(todo);
             }
@@ -112,8 +100,6 @@ public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
                 Unirest.post("/todos/" + id + "/tasksof")
                         .body("{\"id\":\"" + projId + "\"}")
                         .asJson();
-
-//                categorizeTaskWithTitleAsPriority(tmp.get(0), columns.get(2));
             }
             firstLine = false;
         }

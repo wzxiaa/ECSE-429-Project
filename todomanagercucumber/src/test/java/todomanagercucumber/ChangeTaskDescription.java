@@ -1,44 +1,15 @@
 package todomanagercucumber;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import kong.unirest.Unirest;
-import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
 import static org.junit.Assert.*;
 
-public class ChangeTaskDescription extends BaseSteps{
-
-//    String errorMessage;
-//    int statusCode;
-//    JSONObject originalValue;
-//    JSONObject response;
-//    JSONObject originalTodoList;
-//    JSONArray taskList;
-//    int counter;
-
-//    @Before
-//    public void initVars() {
-//        Unirest.config().defaultBaseUrl(BASE_URL);
-//        startServer();
-//        counter = 0;
-//        statusCode = 0;
-//        errorMessage = "";
-//        response = null;
-//        originalValue = null;
-//        originalTodoList = null;
-//        taskList = null;
-//    }
-//
-//    @After
-//    public void after() {
-//        stopServer();
-//    }
+public class ChangeTaskDescription extends BaseStepDefinition {
 
     @Given("^(.*) is the title of a todo registered on the system$")
     public void selected_Title_Is_The_Title_Of_A_Todo_Registered_On_The_System(String selectedTitle) {

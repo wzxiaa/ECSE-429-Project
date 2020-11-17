@@ -1,5 +1,5 @@
-Feature: Mark task as done (ID_003)
-    As a student, I mark a task as done on my course to do list, so I can track my accomplishments.
+Feature: ID_003 Mark task as done
+As a student, I mark a task as done on my course to do list, so I can track my accomplishments.
 
   Background:
     Given the API server is running
@@ -62,3 +62,4 @@ Feature: Mark task as done (ID_003)
       | title   | status |
       | NULL    | 404    |
       | Midterm | 404    |
+

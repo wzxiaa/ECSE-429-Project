@@ -1,6 +1,5 @@
 package todomanagercucumber;
 
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -9,7 +8,7 @@ import kong.unirest.json.JSONObject;
 
 import static org.junit.Assert.*;
 
-public class MarkTaskAsDone extends BaseSteps {
+public class MarkTaskAsDoneStepDefinition extends BaseStepDefinition {
 
     @Given("^(.+) is the title of the task$")
     public void is_the_title_of_the_task(String title) throws Throwable {

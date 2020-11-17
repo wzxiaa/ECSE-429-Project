@@ -1,5 +1,5 @@
-Feature: Delete course to do list (ID_006)
-    As a student, I remove a to do list for a class which I am no longer taking, to declutter my schedule.
+Feature: ID_006 Delete course to do list
+As a student, I remove a to do list for a class which I am no longer taking, to declutter my schedule.
 
   Background:
     Given the API server is running
@@ -57,3 +57,4 @@ Feature: Delete course to do list (ID_006)
       | title   | status |
       | NULL    | 404    |
       | ECSE420 | 404    |
+

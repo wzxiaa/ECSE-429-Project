@@ -1,16 +1,9 @@
 package todomanagercucumber;
 
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
-import io.cucumber.java.sl.In;
-import io.cucumber.junit.CucumberOptions;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
@@ -19,7 +12,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class QueryIncompleteTasksStepDefinition extends BaseSteps {
+public class QueryIncompleteTasksStepDefinition extends BaseStepDefinition {
 
 
     @Given("^(.+) is the title of the class$")

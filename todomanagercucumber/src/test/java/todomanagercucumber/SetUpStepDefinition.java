@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-public class SetUpStepDefinition extends BaseSteps {
+public class SetUpStepDefinition extends BaseStepDefinition {
 
     @Given("^the API server is running$")
     public void the_api_server_is_running() throws Throwable {

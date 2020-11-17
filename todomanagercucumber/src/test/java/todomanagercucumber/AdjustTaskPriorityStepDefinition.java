@@ -1,25 +1,17 @@
 package todomanagercucumber;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.datatable.DataTable;
 import kong.unirest.Unirest;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class AdjustTaskPriorityStepDefinition extends BaseSteps{
-
-    private int expected;
+public class AdjustTaskPriorityStepDefinition extends BaseStepDefinition {
 
     @And("^the following priorities are registered in the system:$")
     public void the_following_priorities_are_registered_in_the_system(DataTable table) {
@@ -68,12 +60,6 @@ public class AdjustTaskPriorityStepDefinition extends BaseSteps{
             String todonewprioritytask, String todotitle) {
         requestPriorityForTodo(todotitle, todonewprioritytask);
     }
-
-
-//    @When("^user requests to remove (.+) priority categorization from (.+)$")
-//    public void user_requests_to_remove_priority_categorization_from(String oldpriority, String todotitle) {
-//        removePriorityCcategorization(oldpriority, todotitle);
-//    }
 
     @Given("the todo {string} is assigned as a {string}")
     public void the_todo_is_assigned_as_a(String title, String priority) {

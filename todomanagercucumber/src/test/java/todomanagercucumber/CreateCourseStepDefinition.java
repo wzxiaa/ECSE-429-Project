@@ -1,35 +1,13 @@
 package todomanagercucumber;
 
-import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
-import io.cucumber.junit.CucumberOptions;
-import kong.unirest.*;
 import kong.unirest.json.JSONObject;
 import static org.junit.Assert.*;
 
-//@CucumberOptions(features = "classpath:todomanagercucumber/ID005_create_new_course.feature")
-public class CreateCourseStepDefinition extends BaseSteps {
-
-
-//    @Given("^the API server is running$")
-//    public void the_api_server_is_running() throws Throwable {
-//        assertEquals(true, isAlive());
-//    }
-
-//    @Before
-//    public static void setupForAllTests() {
-//        serverProcess = null;
-//        unirest.config().reset();
-//        startServer();
-//    }
-//
-//    @After
-//    public static void tearDownAllTests() {
-//        stopServer();
-//    }
+public class CreateCourseStepDefinition extends BaseStepDefinition {
 
     @Given("^(.+) is the title of the new course$")
     public void is_the_title_of_the_new_course(String title) throws Throwable {

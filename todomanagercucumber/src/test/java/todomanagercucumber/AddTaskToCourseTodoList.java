@@ -1,7 +1,5 @@
 package todomanagercucumber;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -9,38 +7,11 @@ import io.cucumber.java.en.When;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
 import static org.junit.Assert.assertEquals;
 
-public class AddTaskToCourseTodoList extends BaseSteps{
-
-//    String errorMessage;
-//    int statusCode;
-//    JSONObject originalValue;
-//    JSONObject response;
-//    JSONObject originalTodoList;
-//    JSONArray taskList;
-//    int counter;
-//
-//    @Before
-//    public void initVars() {
-//        Unirest.config().defaultBaseUrl(BASE_URL);
-//        startServer();
-//        counter = 0;
-//        statusCode = 0;
-//        errorMessage = "";
-//        response = null;
-//        originalValue = null;
-//        originalTodoList = null;
-//        taskList = null;
-//    }
-//
-//    @After
-//    public void after() {
-//        stopServer();
-//    }
+public class AddTaskToCourseTodoList extends BaseStepDefinition {
 
     @Given("the todo with name {string} and description {string} is registered in the system")
     public void the_todo_with_name_something_and_description_something_is_registered_in_the_system(String todotitle, String tododescription){

@@ -1,21 +1,17 @@
 package todomanagercucumber;
 
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.PendingException;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DeleteCourseTodoListStepDefinition extends BaseSteps {
+public class DeleteCourseTodoListStepDefinition extends BaseStepDefinition {
 
     @When("^the user deletes the course to do list for the course with (.+)$")
     public void the_user_deletes_the_course_to_do_list_for_the_course_with(String title) throws Throwable {

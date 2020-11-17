@@ -12,12 +12,13 @@ import kong.unirest.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class BaseSteps {
+public class BaseStepDefinition {
 
     protected static String pathToJar = "runTodoManagerRestAPI-1.5.5.jar";
     protected static final String BASE_URL = "http://localhost:4567";
@@ -31,6 +32,7 @@ public class BaseSteps {
     // variables used for each tests
     protected static String errorMessage;
     protected static int statusCode;
+    protected static List<HttpResponse<JsonNode>> responsesList;
     protected static JSONObject originalValue;
     protected static JSONObject originalTodoList;
     protected static JSONArray taskList;
@@ -60,6 +62,7 @@ public class BaseSteps {
         statusCode = 0;
         errorMessage = "";
         response = null;
+        responsesList = new ArrayList<>();
         originalValue = null;
         originalTodoList = null;
         taskList = null;
@@ -285,19 +288,7 @@ public class BaseSteps {
         for (Object todo : todos) {
             JSONObject obj = (JSONObject) todo;
             int todo_id = obj.getInt("id");
-            httpresponse = unirest.delete(BASE_URL + "/todos" + "/" + todo_id + "/tasksof" + "/" + p_id).asJson();
+            responsesList.add(unirest.delete(BASE_URL + "/todos" + "/" + todo_id + "/tasksof" + "/" + p_id).asJson());
         }
     }
-//    public static void when_user_requests_to_categorize_todo_with_title_as_priority(String todotitle, String prioritytoassign) {
-//        // Find ID of Task todo_title
-//        int id = findIdFromTodoName(todotitle.replace("\"", ""));
-//
-//        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id + "/categories")
-//                .body("{\n\"title\":\"" + prioritytoassign.replace("\"", "") + "\"\n}\n").asJson();
-//
-//        statusCode = response.getStatus();
-//        if (statusCode != 200 && statusCode != 201) {
-//            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
-//        }
-//    }
 }
