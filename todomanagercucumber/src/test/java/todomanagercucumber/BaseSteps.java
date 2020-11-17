@@ -268,6 +268,26 @@ public class BaseSteps {
         return todoObj;
     }
 
+
+    public static void deleteTaskByIds(int project_id, int todo_id) {
+        httpresponse = unirest.delete(BASE_URL + "/todos" + "/" + todo_id + "/tasksof" + "/" + project_id).asJson();
+        //statusCode = response.getStatus()
+    }
+
+    public static void deleteAllTask(String projecttitle) {
+        JSONObject project = findProjectByName(projecttitle);
+
+        p_id = project.getInt("id");
+        //JSONArray response = Unirest.get(BASE_URL + "/projects" + "/" + p_id + "/" + "tasks").asJson().getBody().getArray();
+
+        JSONArray todos = project.getJSONArray("tasks");
+        //System.out.println("todos : " + todos.toString());
+        for (Object todo : todos) {
+            JSONObject obj = (JSONObject) todo;
+            int todo_id = obj.getInt("id");
+            httpresponse = unirest.delete(BASE_URL + "/todos" + "/" + todo_id + "/tasksof" + "/" + p_id).asJson();
+        }
+    }
 //    public static void when_user_requests_to_categorize_todo_with_title_as_priority(String todotitle, String prioritytoassign) {
 //        // Find ID of Task todo_title
 //        int id = findIdFromTodoName(todotitle.replace("\"", ""));

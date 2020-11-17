@@ -3,7 +3,7 @@ Feature: Query incomplete HIGH priority tasks
 
   Background:
     Given the API server is running
-    And the following priorities are registered in the system:
+    And the following categories exist in the system
       | title  | description          | 
       | HIGH   | High Priority Task   | 
       | MEDIUM | Medium Priority Task | 

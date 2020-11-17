@@ -40,6 +40,7 @@ public class QueryIncompleteHighPriorityTasksStepDefinition extends BaseSteps {
                     .getJSONArray("todos").get(0);
             int priorityID = ((JSONObject) ((JSONArray) todo.get("categories")).get(0)).getInt("id");
             System.out.println(priorityID);
+            System.out.println((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0));
             String category = (String) ((JSONObject) ((JSONArray) ( Unirest.get("/categories/" + priorityID).asJson().getBody().getObject()).get("categories")).get(0)).get("title");
             System.out.println(category);
             if (todo.getString("doneStatus").equalsIgnoreCase("false") && category.equalsIgnoreCase("HIGH")) {

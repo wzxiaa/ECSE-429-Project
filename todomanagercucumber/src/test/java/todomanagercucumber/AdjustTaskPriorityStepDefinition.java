@@ -26,10 +26,10 @@ public class AdjustTaskPriorityStepDefinition extends BaseSteps{
         the_following_categories_are_registered_in_the_todo_manager_restapi_system(table);
     }
 
-    @Given("^the following categories are registered in the todoManagerRestAPI system:$")
+//    @Given("^the following categories are registered in the todoManagerRestAPI system:$")
     public void the_following_categories_are_registered_in_the_todo_manager_restapi_system(DataTable table) {
         List<List<String>> rows = table.asLists(String.class);
-    
+
         boolean firstLine = true;
         for (List<String> columns : rows) {
             // ignore title row
