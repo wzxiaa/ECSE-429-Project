@@ -14,17 +14,17 @@ Feature: Adjust task priority
       | COMP360	 | false     | true   |	Algorithm Design            |
       | ECSE416	 | true      | false  |	Telecommunication           |
       | COMP202  | true      | true   | Introduction to Programming |
-    And the following tasks are associated with "ECSE429"
+    And the following todos are associated with "ECSE429"
       | title                    | doneStatus |  priority   | description                                 |
       | Assignment1 Interview    | true       |   MEDIUM    | Interview some engineers                    |
       | Assignment1 Report       | false      |    HIGH     | Write research paper based on the interview |
       | Project Deliverable 1    | false      |    LOW      | Unit test                                   |
       | Project Deliverable 2    | false      |    HIGH     | Cucumber test                               |
-    And the following tasks are associated with "COMP360"
+    And the following todos are associated with "COMP360"
       | title               | doneStatus |  priority  |  description             |
       | Assignment1         | true       |   MEDIUM   | Dynamic Programming      |
       | Assignment2         | false      |    HIGH    | Linear Programming       |
-    And the following tasks are associated with "ECSE416"
+    And the following todos are associated with "ECSE416"
       | title            | doneStatus      |  priority  |  description          |
       | Lab1             | true            |    LOW     |  TCP                  |
       | Lab2             | true            |   MEDIUM   |  UDP                  |

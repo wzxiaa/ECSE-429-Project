@@ -37,7 +37,7 @@ public class QueryIncompleteTasksStepDefinition extends BaseSteps {
         throw new io.cucumber.java.PendingException();
     }
 
-    @Then("^no todos will be returned$")
+    @Then("^no tasks will be returned$")
     public void no_todos_will_be_returned() throws Throwable {
         if (actual_incompleted_todos_of_course == null) {
             actual_incompleted_todos_of_course = new HashMap<>();

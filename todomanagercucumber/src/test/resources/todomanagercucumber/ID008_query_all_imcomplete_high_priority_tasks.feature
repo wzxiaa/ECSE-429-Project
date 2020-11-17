@@ -19,7 +19,7 @@ Feature: Query incomplete HIGH priority tasks
       | Assignment1 Interview    | true       |   MEDIUM    | Interview some engineers                    |
       | Assignment1 Report       | false      |    HIGH     | Write research paper based on the interview |
       | Project Deliverable 1    | false      |    LOW      | Unit test                                   |
-      | Project Deliverable 2    | true       |    HIGH     | Cucumber test                               |
+      | Project Deliverable 2    | true      |    HIGH     | Cucumber test                               |
     And the following todos are associated with "COMP360"
       | title               | doneStatus |  priority  |  description             |
       | Assignment1         | true       |   MEDIUM   | Dynamic Programming      |
@@ -40,7 +40,7 @@ Feature: Query incomplete HIGH priority tasks
     And each todo returned will have a HIGH priority
     Examples: 
       | title    | number | 
-      | ECSE429  |   1    | 
+      | ECSE429  |   1    |
       | COMP360  |   1    |
 
   Scenario Outline: Query incomplete HIGH priority tasks from a course with no incomplete HIGH priority tasks (Alternate flow)

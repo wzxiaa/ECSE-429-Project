@@ -37,7 +37,7 @@ Feature: Query complete tasks for a course (ID_007)
   Scenario Outline: Query incomplete tasks for a course that does not has incomplete tasks associated with it (Alternate flow)
     Given <title> is the title of the class
      When the user requests the incomplete tasks for the course with <title>
-     Then no todos will be returned
+     Then no tasks will be returned
     Examples:
       | title       |
       | ECSE416     |
@@ -45,7 +45,7 @@ Feature: Query complete tasks for a course (ID_007)
   Scenario Outline: Query incomplete tasks for a course with no tasks (Alternate flow)
     Given <title> is the title of the class
      When the user requests the incomplete tasks for the course with <title>
-     Then no todos will be returned
+     Then no tasks will be returned
     Examples:
       | title       |
       | COMP202     |
@@ -53,7 +53,7 @@ Feature: Query complete tasks for a course (ID_007)
   Scenario Outline: Query incomplete tasks for a non-exist course (Error flow)
     Given <title> is the title of the class
      When the user requests the incomplete tasks for the course with <title>
-      Then no todos will be returned
+      Then no tasks will be returned
     Examples:
       | title     |
       | NULL      |

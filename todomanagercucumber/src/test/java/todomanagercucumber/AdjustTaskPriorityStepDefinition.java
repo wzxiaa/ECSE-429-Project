@@ -19,6 +19,8 @@ import static org.junit.Assert.*;
 
 public class AdjustTaskPriorityStepDefinition extends BaseSteps{
 
+    private int expected;
+
     @And("^the following priorities are registered in the system:$")
     public void the_following_priorities_are_registered_in_the_system(DataTable table) {
         the_following_categories_are_registered_in_the_todo_manager_restapi_system(table);
@@ -43,15 +45,12 @@ public class AdjustTaskPriorityStepDefinition extends BaseSteps{
 
     @Given("the todo with name {string}, done status {string} and description {string} is registered in the system")
     public void the_todo_with_name_done_status_and_description_is_registered_in_the_system(String todotitle, String tododonestatus, String tododescription) {
-        Unirest.post("/todos")
-                .body("{\"title\":\"" + todotitle.replace("\"", "") + "\",\"doneStatus\":"
-                        + tododonestatus.replace("\"", "") + ",\"description\":\"" + tododescription.replace("\"", "") + "\"}")
-                .asJson();
+        createTodo(todotitle, tododonestatus, tododescription);
     }
 
     @When("^user requests to adjust the priority category of the todo with title (.+) from (.+) to (.+)$")
     public void user_requests_to_update_the_priority_categorization_of_the_todo_with_title_from_to(String todotitle, String todoprioritytask, String updatedprioritytask) {
-        user_requests_to_remove_priority_categorization_from(todoprioritytask, todotitle);
+        removePriorityCcategorization(todoprioritytask, todotitle);
         requestPriorityForTodo(todotitle, updatedprioritytask);
     }
 
@@ -67,24 +66,20 @@ public class AdjustTaskPriorityStepDefinition extends BaseSteps{
         requestPriorityForTodo(todotitle, todonewprioritytask);
     }
 
-    @When("^user requests to remove (.+) priority categorization from (.+)$")
-    public void user_requests_to_remove_priority_categorization_from(String oldpriority, String todotitle) {
-        int category_id = findIdFromTodoCategoryName(oldpriority.replace("\"", ""), todotitle.replace("\"", ""));
-        int todo_id = findIdFromTodoName(todotitle.replace("\"", ""));
+//    @When("^user requests to remove (.+) priority categorization from (.+)$")
+//    public void user_requests_to_remove_priority_categorization_from(String oldpriority, String todotitle) {
+//        removePriorityCcategorization(oldpriority, todotitle);
+//    }
 
-        Unirest.delete("/todos/" + todo_id + "/categories/" + category_id).header("Content-Type", "application/json")
-                .asJson();
-    }
-
-    @And("^the todo (.+) is assigned as a (.+) priority task$")
-    public void the_todo_is_assigned_as_a_priority_task(String todotitle, String originalpriority) {
-        when_user_requests_to_categorize_todo_with_title_as_priority(todotitle, originalpriority);
-    }
+//    @And("^the todo (.+) is assigned as a (.+) priority task$")
+//    public void the_todo_is_assigned_as_a_priority_task(String todotitle, String originalpriority) {
+//        categorizeTaskWithTitleAsPriority(todotitle, originalpriority);
+//    }
 
     @Then("^an error code (.+) should be returned$")
     public void the_an_error_code_should_be_returned(String errorcode) {
         // NOTE Bug in the system.
-        assertEquals(201, statusCode);
+        assertEquals(expected, statusCode);
     }
 
 }

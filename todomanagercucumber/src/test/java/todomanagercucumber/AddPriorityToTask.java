@@ -43,26 +43,24 @@ public class AddPriorityToTask extends BaseSteps{
 //        stopServer();
 //    }
 
-    @Given("the todo with name {string}, done status {string} and description {string} is registered in the system")
-    public void the_todo_with_name_done_status_and_description_is_registered_in_the_system(String todotitle, String tododonestatus, String tododescription) {
-        Unirest.post("/todos")
-                .body("{\"title\":\"" + todotitle.replace("\"", "") + "\",\"doneStatus\":"
-                        + tododonestatus.replace("\"", "") + ",\"description\":\"" + tododescription.replace("\"", "") + "\"}")
-                .asJson();
-    }
+//    @Given("the todo with name {string}, done status {string} and description {string} is registered in the system")
+//    public void the_todo_with_name_done_status_and_description_is_registered_in_the_system(String todotitle, String tododonestatus, String tododescription) {
+//        createTodo(todotitle, tododonestatus, tododescription);
+//    }
 
     @When("user requests to categorize todo with title {string} as {string} priority")
     public void when_user_requests_to_categorize_todo_with_title_as_priority(String todotitle, String prioritytoassign) {
         // Find ID of Task todo_title
-        int id = findIdFromTodoName(todotitle.replace("\"", ""));
-
-        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id +"/categories")
-                .body("{\n\"title\":\"" + prioritytoassign.replace("\"", "") + "\"\n}\n").asJson();
-
-        statusCode = response.getStatus();
-        if(statusCode != 200 && statusCode != 201) {
-            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
-        }
+//        int id = findIdFromTodoName(todotitle.replace("\"", ""));
+//
+//        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id +"/categories")
+//                .body("{\n\"title\":\"" + prioritytoassign.replace("\"", "") + "\"\n}\n").asJson();
+//
+//        statusCode = response.getStatus();
+//        if(statusCode != 200 && statusCode != 201) {
+//            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
+//        }
+        categorizeTaskWithTitleAsPriority(todotitle, prioritytoassign);
     }
 
     @Then("^the \"([^\"]*)\" should be classified as a \"([^\"]*)\" priority task$")
@@ -78,12 +76,7 @@ public class AddPriorityToTask extends BaseSteps{
 
     @When("^user requests to remove (.+) priority categorization from (.+)$")
     public void user_requests_to_remove_priority_categorization_from(String oldpriority, String todotitle) {
-        int category_id = findIdFromTodoCategoryName(oldpriority.replace("\"", ""), todotitle.replace("\"", ""));
-        int todo_id = findIdFromTodoName(todotitle.replace("\"", ""));
-
-        Unirest.delete("/todos/" + todo_id + "/categories/" + category_id)
-                .header("Content-Type", "application/json")
-                .asJson();
+        removePriorityCcategorization(oldpriority, todotitle);
     }
 
     @Then("^the system should output an error message$")

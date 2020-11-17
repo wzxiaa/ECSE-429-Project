@@ -4,6 +4,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
 import kong.unirest.*;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
@@ -14,8 +15,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class BaseSteps {
 
@@ -76,8 +76,6 @@ public class BaseSteps {
             System.out.println("Starting server...");
 
             body = new JSONObject();
-            actual_incompleted_todos_of_course = new HashMap<>();
-            expected_incompleted_todos_of_course = new HashMap<>();
             ProcessBuilder pb = new ProcessBuilder();
             pb.command("java", "-jar" ,pathToJar);
             if (serverProcess != null) {
@@ -106,10 +104,7 @@ public class BaseSteps {
 
     protected static boolean isAlive() {
         try {
-            System.out.println("before");
             int status = unirest.get(BASE_URL).asString().getStatus();
-            System.out.println("after");
-            System.out.println("status: " + status);
             if (status == STATUS_OK) return true;
             return false;
         } catch (UnirestException e) {
@@ -224,4 +219,65 @@ public class BaseSteps {
             httpresponse = Unirest.post("/todos/" + todo_id).body(body).asJson();
         }
     }
+    public static void assertDoneStatusEquals(JSONObject todo, boolean val) {
+        assertNotNull(todo);
+        assertTrue(todo.getString("doneStatus").equalsIgnoreCase(val + ""));
+    }
+
+    //when_user_requests_to_categorize_todo_with_title_as_priority
+    public static void categorizeTaskWithTitleAsPriority(String todotitle, String prioritytoassign) {
+        // Find ID of Task todo_title
+        int id = findIdFromTodoName(todotitle.replace("\"", ""));
+
+        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id +"/categories")
+                .body("{\n\"title\":\"" + prioritytoassign.replace("\"", "") + "\"\n}\n").asJson();
+
+        statusCode = response.getStatus();
+        if(statusCode != 200 && statusCode != 201) {
+            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
+        }
+    }
+
+
+    // the_todo_with_name_done_status_and_description_is_registered_in_the_system(String todotitle, String tododonestatus, String tododescription)
+    public static void createTodo(String todotitle, String tododonestatus, String tododescription) {
+        Unirest.post("/todos")
+                .body("{\"title\":\"" + todotitle.replace("\"", "") + "\",\"doneStatus\":"
+                        + tododonestatus.replace("\"", "") + ",\"description\":\"" + tododescription.replace("\"", "") + "\"}")
+                .asJson();
+    }
+
+
+    public void removePriorityCcategorization(String oldpriority, String todotitle) {
+        int category_id = findIdFromTodoCategoryName(oldpriority.replace("\"", ""), todotitle.replace("\"", ""));
+        int todo_id = findIdFromTodoName(todotitle.replace("\"", ""));
+
+        Unirest.delete("/todos/" + todo_id + "/categories/" + category_id).header("Content-Type", "application/json")
+                .asJson();
+    }
+
+    public JSONObject addTodoByRow(List<String> columns) {
+        String title = "\"title\":\"" + columns.get(0) + "\"";
+        String doneStatus = "\"doneStatus\":" + columns.get(1);
+        String description = "\"description\":\"" + columns.get(2) + "\"";
+        JSONObject todoObj = Unirest.post("/todos")
+                .body("{\n" + title + ",\n" + doneStatus + ",\n" + description + "\n}").asJson().getBody().getObject();
+        if (columns.size() == 4) {
+            requestPriorityForTodo(columns.get(0), columns.get(3));
+        }
+        return todoObj;
+    }
+
+//    public static void when_user_requests_to_categorize_todo_with_title_as_priority(String todotitle, String prioritytoassign) {
+//        // Find ID of Task todo_title
+//        int id = findIdFromTodoName(todotitle.replace("\"", ""));
+//
+//        HttpResponse<JsonNode> response = Unirest.post("/todos/" + id + "/categories")
+//                .body("{\n\"title\":\"" + prioritytoassign.replace("\"", "") + "\"\n}\n").asJson();
+//
+//        statusCode = response.getStatus();
+//        if (statusCode != 200 && statusCode != 201) {
+//            errorMessage = response.getBody().getObject().getJSONArray("errorMessages").getString(0);
+//        }
+//    }
 }
